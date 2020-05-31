@@ -1,0 +1,153 @@
+Communication and service discovery level 1
+.............................................................
+
+Microservices?
+Microservices allows us to break our large system into the number of independent collaborating processes.
+
+
+Microservice Benefits
+.....................
+The smaller code base is easy to maintain.
+Easy to scale as an individual component.
+Technology diversity i.e. we can mix libraries, databases, frameworks etc.
+Fault isolation i.e. a process failure should not bring the whole system down.
+Independent deployment
+Deployment time reduce
+
+Load Balancing with Ribbon
+Our smart RestTemplate automatically integrates two Netflix utilities
+
+Eureka Service Discovery
+Ribbon Client Side Load Balancer
+
+Eureka returns the URL of all available instances
+Ribbon determine the best available service too use
+
+1.Spring boot
+2.Spring cloud
+3.Netflix
+
+Spring cloud is one of the way to create the microservices in java.
+
+Workshop URL By Koushik
+............................
+https://github.com/koushikkothagal/spring-boot-microservices-workshop
+
+Service discovery technology (spring cloud)
+.......................
+eureka
+ribbon
+hysterix
+zuul
+
+Steps invloved running microservoce with eureka server
+............................................................
+1.starting eureka server
+2.Have microservices register to eureka server  by euraka client
+3.Have microservices locate (consume) using eureka clients.
+
+
+There are two dependencies one for server and another for discovery client.
+Each microservices need to have client dependency to register itself to eureka server.
+@enableeurekaserver to make eureka server.
+@enableeurekaclient(was mandatory in some version but now it is not)
+We can have multiple eureka server.Each eureka server acts like eureka client,trying to find out other eureka server to register itself.
+We can stop this by adding following properties:
+eureka.client.register-with-eureka=false
+
+how does eureka client find eureka server?
+................................................
+if eureka server running on default port,eureka client finds it automatically.
+If it is running different port and in different server then we need to pass these information in eureka client application as properties.
+eureka.client.fetch-registry=false
+
+@loadbalanced on resttemplate need to understand
+it does service discovery and also client side load balancing.
+
+we can also use discovery client instead of loadbalanced resttemplate to service discovery.
+
+
+
+Fault Tolerance and Resilience level 2
+.............................................................
+
+Resilience?
+how many faults can system handle.
+
+
+Circuit Breaker Pattern
+....................................
+1.Detect something is wrong.
+2.Take temporary steps to avoid situation getting worsen.
+3.Deatcti
+hystrix strean in properties filevate problem statement so that it does not affect downstream components.
+
+Trigger for circuit break
+..............................
+
+Circuit breaker parameter
+.................................
+Last n request to consider for the decesion.
+how many of those should fail?
+Timeout duration
+how long to wait(sleep window) for recheck
+
+what to do whedn circuit breaks
+.......................................
+need to have a fallback method returning a default fallback response.
+
+Hystrix
+.................
+netflix project used for circuit breaker.
+need tp add hystrix dependency.
+@enablecircuitbreaker to the application class.
+@Hystrixcommand to the methods that need circuit breaker.
+configure hystrix behaviour(fallbackmethod and command proprties).
+
+Hystrix dashboard
+..........................
+spring actuator and hystrix dashboard dependency.
+@enablehystrixdashboard
+
+
+Bulkhead pattern
+.............................
+need to have different thread pool for the method need circuit breaker.
+
+
+
+Microservice configuration with spring boot level 3
+.......................................................
+Goals of configurations
+
+1.Externalized.
+2.Environmwnt specific.
+3.Consistent.
+4.Version history.
+5.Realtime Management.
+
+
+Externalizedd
+......................
+we can have externalized properties and it will provide properties present inside jar and also we can provide property in command line.
+We can provide default value for a property.
+We can get comma separated string as List.
+We can get json string as map using spring expression language using #{${property}}
+We can have configuration bean and can autowire it.(It reads properties file using getter and setter (@configuration and @configurationProperties(perfix)))
+
+Environment specific
+..........................
+Using Spring profiles we can achieve it.
+application-profilename.extn
+Default profile is always active.
+we can tell spring to use a specific profile by putting spring.profiles.active property in application.properties or by passing in command line arguements.
+We can get bean instanciated and injected based on profile.Need to put @Profile(name of the profile) in the bean to be injected.
+Spring provides Environment bean to look up for profiles and property but it is not recommended.
+
+
+Consistency
+.................
+Config as microservice,Spring cloud config server getting configuration from git.
+Spring cloud config client pointing to spting clooud config server (spring.cloud.config.uri=path of spring cloud config server)
+@RefeshScope on bean and using health end point of spring actuator.
+
