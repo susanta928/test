@@ -151,3 +151,5 @@ Config as microservice,Spring cloud config server getting configuration from git
 Spring cloud config client pointing to spting clooud config server (spring.cloud.config.uri=path of spring cloud config server)
 @RefeshScope on bean and using health end point of spring actuator.
 
+
+testing
